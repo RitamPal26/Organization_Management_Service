@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from app.core.database import db
-from app.api.routes import organization, admin
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -11,16 +11,24 @@ async def lifespan(app: FastAPI):
     # Shutdown
     await db.disconnect()
 
+
 app = FastAPI(
     title="Organization Management API",
+    description="Multi-tenant organization management service",
     version="1.0.0",
     lifespan=lifespan
 )
 
-# Include routers
-app.include_router(organization.router, prefix="/org", tags=["Organization"])
-app.include_router(admin.router, prefix="/admin", tags=["Admin"])
 
 @app.get("/")
 async def root():
-    return {"message": "Organization Management API"}
+    return {
+        "message": "Organization Management Service",
+        "version": "1.0.0",
+        "status": "running"
+    }
+
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
