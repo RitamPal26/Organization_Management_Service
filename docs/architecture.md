@@ -268,17 +268,19 @@ app/
 ## Additional questions
 
 
-#### Question: Do I think this is a good architecture with a scalable design?
+### 1. Do I think this is a good architecture with a scalable design?
 
-**1. Scalability Bottleneck:** The "Collection-per-Tenant" pattern hits a hard ceiling. MongoDB performance degrades significantly when managing thousands of collections due to namespace limits and index overhead.
+This architecture is excellent for strict data isolation and prototyping but is **not scalable** for large production environments. The "Collection-per-Tenant" pattern hits a hard ceiling, as MongoDB performance degrades significantly due to namespace limits and index overhead when managing thousands of collections. Additionally, operational tasks become unmanageable, as backups, monitoring, and schema migrations are fragmented across thousands of dynamic collections rather than a centralized schema.
 
-**2. Resource Intensity:** Each dynamic collection consumes file descriptors and memory for metadata, regardless of the data size.
+To balance out the negatives of the "Collection-per-Tenant" architecture and NoSQL stack, we can implement the following strategies:
 
-**3. Operational Complexity:** Managing backups, monitoring, and schema migrations becomes fragmented across thousands of individual collections rather than a centralized schema.
+- **Architectural Shift**: Hybrid Multi-Tenancy To solve the scalability bottleneck, use a Hybrid Approach.
+
+- **Data Integrity**: Application-Layer Enforcement To mitigate the lack of SQL-style constraints.
 
 
- #### Question: What can be the trade-offs with the tech stack and design choices?
+### 2. What can be the trade-offs with the tech stack and design choices?
 
- **Benefit:** FastAPI's native async support paired with Motor allows for high-concurrency I/O, while MongoDB's flexible schema handles varying tenant data structures easily.
+**Design:** We gain perfect data isolation but trade off resource efficiency; dynamic collections consume excessive file descriptors and memory regardless of data size.
 
- **Cost:** We lose the strict ACID transaction guarantees and relational integrity constraints (foreign keys) standard in SQL databases like PostgreSQL, pushing data validation logic into the application layer.
+**Tech Stack:** We gain high-performance concurrency through FastAPI’s native async support and Motor, along with MongoDB's schema flexibility. However, we lose the strict ACID transaction guarantees and relational integrity constraints (like foreign keys) found in SQL, forcing validation logic into the application layer.
