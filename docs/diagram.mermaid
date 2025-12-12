@@ -1,0 +1,89 @@
+graph TB
+    Client[Client/Swagger UI]
+    
+    subgraph "FastAPI Application"
+        subgraph "API Layer"
+            CreateAPI[POST /org/create]
+            GetAPI[GET /org/get]
+            UpdateAPI[PUT /org/update]
+            DeleteAPI[DELETE /org/delete]
+            LoginAPI[POST /admin/login]
+        end
+        
+        subgraph "Middleware"
+            JWT[JWT Authentication]
+            RateLimit[Rate Limiter]
+            Security[Security Headers]
+        end
+        
+        subgraph "Service Layer"
+            OrgService[OrganizationService]
+            AuthService[AuthService]
+        end
+        
+        subgraph "Repository Layer"
+            OrgRepo[OrganizationRepository]
+        end
+        
+        subgraph "Utilities"
+            JWTUtil[JWT Utils]
+            BcryptUtil[Password Hashing]
+        end
+    end
+    
+    subgraph "MongoDB Atlas"
+        MasterDB[(Master Database)]
+        
+        subgraph "Master Collections"
+            OrgCollection[organizations]
+            AdminCollection[admins]
+        end
+        
+        subgraph "Dynamic Collections"
+            DynCol1[org_acme_corp]
+            DynCol2[org_xyz_company]
+            DynCol3[org_...]
+        end
+    end
+    
+    Client -->|1. Create Org| CreateAPI
+    Client -->|2. Login| LoginAPI
+    Client -->|3. Get Org| GetAPI
+    Client -->|4. Update Org| UpdateAPI
+    Client -->|5. Delete Org| DeleteAPI
+    
+    CreateAPI --> RateLimit
+    LoginAPI --> RateLimit
+    GetAPI --> RateLimit
+    UpdateAPI --> JWT
+    DeleteAPI --> JWT
+    
+    RateLimit --> Security
+    JWT --> Security
+    
+    Security --> OrgService
+    Security --> AuthService
+    
+    OrgService --> BcryptUtil
+    OrgService --> OrgRepo
+    AuthService --> BcryptUtil
+    AuthService --> JWTUtil
+    AuthService --> OrgRepo
+    
+    OrgRepo --> MasterDB
+    MasterDB --> OrgCollection
+    MasterDB --> AdminCollection
+    
+    OrgService -.->|Create Dynamic Collection| DynCol1
+    OrgService -.->|Sync Data on Update| DynCol2
+    OrgService -.->|Delete Collection| DynCol3
+    
+    style CreateAPI fill:#90EE90
+    style LoginAPI fill:#87CEEB
+    style UpdateAPI fill:#FFD700
+    style DeleteAPI fill:#FF6B6B
+    style JWT fill:#FFA07A
+    style MasterDB fill:#DDA0DD
+    style DynCol1 fill:#F0E68C
+    style DynCol2 fill:#F0E68C
+    style DynCol3 fill:#F0E68C
