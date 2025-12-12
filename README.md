@@ -11,7 +11,7 @@ This project follows a **layered architecture** with clear separation of concern
 - **Repository Layer**: Database operations
 - **Models/Schemas**: Pydantic models for validation
 
-See [Architecture Diagram](#architecture-diagram) for visual representation.
+For detailed system architecture, flow diagrams, and design decisions, see the [Architecture Documentation](docs/architecture.md).
 
 ## Features
 
@@ -25,15 +25,15 @@ See [Architecture Diagram](#architecture-diagram) for visual representation.
 ## Prerequisites
 
 - Python 3.9+
-- MongoDB Atlas account or local MongoDB instance
+- MongoDB Atlas account
 - pip
 
 ## Installation & Setup
 
 ### 1. Clone the repository
 ```
-git clone https://github.com/RitamPal26/Organization-Management-Service.git
-cd Organization-Management-Service
+git clone https://github.com/RitamPal26/Organization_Management_Service.git
+cd Organization_Management_Service
 ```
 
 ### 2. Create virtual environment
@@ -198,52 +198,6 @@ organization-management/
 ├── .gitignore
 ├── requirements.txt
 └── README.md
-```
-
-## Testing
-
-### Manual Testing via Swagger UI
-
-1. Navigate to `http://localhost:8000/docs`
-2. Create an organization using `/org/create`
-3. Login using `/admin/login` and copy the token
-4. Click "Authorize" button and paste token
-5. Test authenticated endpoints
-
-### Example Test Flow
-
-```
-# 1. Create organization
-POST /org/create
-{
-  "organization_name": "test_company",
-  "email": "admin@test.com",
-  "password": "Test123456"
-}
-
-# 2. Login
-POST /admin/login
-{
-  "email": "admin@test.com",
-  "password": "Test123456"
-}
-
-# 3. Get organization
-GET /org/get?organization_name=test_company
-
-# 4. Update organization (requires token)
-PUT /org/update
-{
-  "organization_name": "test_company_renamed",
-  "email": "admin@test.com",
-  "password": "Test123456"
-}
-
-# 5. Delete organization (requires token)
-DELETE /org/delete
-{
-  "organization_name": "test_company_renamed"
-}
 ```
 
 ## Security Features
