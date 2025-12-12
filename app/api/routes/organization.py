@@ -7,6 +7,7 @@ from app.schemas.organization import (
 )
 from app.services.organization import OrganizationService
 from app.api.deps import get_current_admin
+from app.middleware.rate_limit import check_rate_limit
 from typing import Dict
 
 router = APIRouter()
@@ -17,7 +18,8 @@ router = APIRouter()
     response_model=OrganizationResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Create Organization",
-    description="Create new organization with admin user and dynamic collection"
+    description="Create new organization with admin user and dynamic collection",
+    dependencies=[Depends(check_rate_limit)]
 )
 async def create_organization(request: CreateOrganizationRequest):
     """
@@ -42,7 +44,8 @@ async def create_organization(request: CreateOrganizationRequest):
     response_model=OrganizationResponse,
     status_code=status.HTTP_200_OK,
     summary="Get Organization",
-    description="Retrieve organization details by name"
+    description="Retrieve organization details by name",
+    dependencies=[Depends(check_rate_limit)]
 )
 async def get_organization(
     organization_name: str = Query(..., description="Name of the organization to retrieve")
@@ -63,7 +66,8 @@ async def get_organization(
     response_model=OrganizationResponse,
     status_code=status.HTTP_200_OK,
     summary="Update Organization",
-    description="Update organization name and sync data to new collection"
+    description="Update organization name and sync data to new collection",
+    dependencies=[Depends(check_rate_limit)]
 )
 async def update_organization(
     request: UpdateOrganizationRequest,
@@ -93,7 +97,8 @@ async def update_organization(
     "/delete",
     status_code=status.HTTP_200_OK,
     summary="Delete Organization",
-    description="Delete organization and its collection (authenticated)"
+    description="Delete organization and its collection (authenticated)",
+    dependencies=[Depends(check_rate_limit)]
 )
 async def delete_organization(
     request: DeleteOrganizationRequest,

@@ -1,17 +1,18 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 
 
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "email": "admin@acme.com",
                 "password": "SecurePass123"
             }
         }
+    )
 
 
 class LoginResponse(BaseModel):
@@ -21,8 +22,8 @@ class LoginResponse(BaseModel):
     organization_name: str
     organization_id: str
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
                 "token_type": "bearer",
@@ -31,6 +32,7 @@ class LoginResponse(BaseModel):
                 "organization_id": "507f1f77bcf86cd799439011"
             }
         }
+    )
 
 
 class TokenPayload(BaseModel):
